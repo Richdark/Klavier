@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AboutWidget</class>
+ <widget class="QWidget" name="AboutWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>0</width>
+    <height>0</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>About Klavier</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>&lt;p style=&quot;margin: 0 0 3px 0; font-weight: bold;&quot;&gt;Klavier v0.1&lt;/p&gt;&lt;p style=&quot;margin: 0 0 3px 0;&quot;&gt;“French accents with ease”&lt;/p&gt;&lt;p style=&quot;margin: 0;&quot;&gt;© 2016 &lt;a href=&quot;http://richard.filipcik.sk&quot;&gt;Richard 'Richdark' Filipčík&lt;/a&gt;&lt;/p&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QLabel" name="icon">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="contacts_left">
+       <property name="text">
+        <string>&lt;p style=&quot;margin: 0 0 3px 0;&quot;&gt;Webpage:&lt;/p&gt;&lt;p style=&quot;margin: 0;&quot;&gt;Issues:&lt;/p&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="contacts_right">
+       <property name="text">
+        <string>&lt;p style=&quot;margin: 0 0 3px 0;&quot;&gt;&lt;a href=&quot;http://filipcik.sk/klavier&quot;&gt;http://filipcik.sk/klavier&lt;/a&gt;&lt;/p&gt;&lt;p style=&quot;margin: 0;&quot;&gt;&lt;a href=&quot;http://github.com/blabla&quot;&gt;http://github.com/blabla&lt;/a&gt;&lt;/p&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,11 @@
+Debug/
+GeneratedFiles/
+x64/
+
+Klavier1.*
+resource.h
+resource1.h
+settings.json
+
+*.aps
+*.vcxproj*
