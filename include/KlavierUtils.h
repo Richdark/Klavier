@@ -1,6 +1,8 @@
 #pragma once
 
 #include "windows.h"
+#include <string>
+#include <unordered_map>
 
 namespace KlavierUtils
 {
@@ -42,5 +44,83 @@ namespace KlavierUtils
 	struct Settings
 	{
 		AccentInput input;
+		UINT hotkey_modifiers;
+		UINT hotkey;
+	};
+
+	const std::unordered_map<std::string, UINT> HotkeyCodes
+	{
+		{ "A", 0x41 },
+		{ "B", 0x42 },
+		{ "C", 0x43 },
+		{ "D", 0x44 },
+		{ "E", 0x45 },
+		{ "F", 0x46 },
+		{ "G", 0x47 },
+		{ "H", 0x48 },
+		{ "I", 0x49 },
+		{ "J", 0x4A },
+		{ "K", 0x4B },
+		{ "L", 0x4C },
+		{ "M", 0x4D },
+		{ "N", 0x4E },
+		{ "O", 0x4F },
+		{ "P", 0x50 },
+		{ "Q", 0x51 },
+		{ "R", 0x52 },
+		{ "S", 0x53 },
+		{ "T", 0x54 },
+		{ "U", 0x55 },
+		{ "V", 0x56 },
+		{ "W", 0x57 },
+		{ "X", 0x58 },
+		{ "Y", 0x59 },
+		{ "Z", 0x5A },
+		{ "Tab", VK_TAB },
+		{ "Space", VK_SPACE },
+		{ "Insert", VK_INSERT },
+		{ "Delete", VK_DELETE },
+		{ "Home", VK_HOME },
+		{ "End", VK_END },
+		{ "Page up", VK_PRIOR },
+		{ "Page down", VK_NEXT }
+	};
+
+	const std::unordered_map<UINT, std::string> HotkeyLabels
+	{
+		{ 0x41, "A" },
+		{ 0x42, "B" },
+		{ 0x43, "C" },
+		{ 0x44, "D" },
+		{ 0x45, "E" },
+		{ 0x46, "F" },
+		{ 0x47, "G" },
+		{ 0x48, "H" },
+		{ 0x49, "I" },
+		{ 0x4A, "J" },
+		{ 0x4B, "K" },
+		{ 0x4C, "L" },
+		{ 0x4D, "M" },
+		{ 0x4E, "N" },
+		{ 0x4F, "O" },
+		{ 0x50, "P" },
+		{ 0x51, "Q" },
+		{ 0x52, "R" },
+		{ 0x53, "S" },
+		{ 0x54, "T" },
+		{ 0x55, "U" },
+		{ 0x56, "V" },
+		{ 0x57, "W" },
+		{ 0x58, "X" },
+		{ 0x59, "Y" },
+		{ 0x5A, "Z" },
+		{ VK_TAB, "Tab" },
+		{ VK_SPACE, "Space" },
+		{ VK_INSERT, "Insert" },
+		{ VK_DELETE, "Delete" },
+		{ VK_HOME, "Home" },
+		{ VK_END, "End" },
+		{ VK_PRIOR, "Page up" },
+		{ VK_NEXT, "Page down" }
 	};
 }

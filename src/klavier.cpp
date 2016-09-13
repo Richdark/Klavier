@@ -4,7 +4,6 @@
 #include "include/klavier.h"
 
 namespace KU = KlavierUtils;
-using std::string;
 
 char * Klavier::settingsFileName = "settings.json";
 
@@ -74,19 +73,21 @@ void Klavier::loadSettings()
 
 void Klavier::applySettings()
 {
-	KeyboardHook& kh = KeyboardHook::getInstance();
-
 	// modify accents using Insert key
 	if (this->settings.input == KU::AccentInput::InsKey)
 	{
-		kh.setHotkey(VK_INSERT);
+		KeyboardHook::setHotkey(VK_INSERT);
 	}
 
 	// modify accents using K key
 	else
 	{
-		kh.setHotkey(0x4B);
+		KeyboardHook::setHotkey(0x4B);
 	}
+
+	// (re)register active switch hotkey
+	HWND window_id = (HWND)this->winId();
+	KeyboardHook::setActiveSwitchHotkey(this->settings, window_id);
 }
 
 void Klavier::createSettingsFile()
@@ -96,6 +97,8 @@ void Klavier::createSettingsFile()
 
 	// set default settings
 	default_settings["input"] = "ins";
+	default_settings["hkmodifiers"] = MOD_NOREPEAT | MOD_ALT | MOD_CONTROL;
+	default_settings["hotkey"] = 0x4B; // K
 
 	QFile settings_file(this->settingsFileName);
 
@@ -135,6 +138,8 @@ Json::Value Klavier::settingsEncode(const KU::Settings & settings)
 	Json::Value encoded;
 
 	encoded["input"] = ((settings.input == KU::AccentInput::InsKey) ? "ins" : "k");
+	encoded["hkmodifiers"] = settings.hotkey_modifiers;
+	encoded["hotkey"] = settings.hotkey;
 
 	return encoded;
 }
@@ -143,7 +148,23 @@ KU::Settings Klavier::settingsDecode(const Json::Value & settings)
 {
 	KU::Settings decoded;
 
-	decoded.input = ((settings["input"] == string("ins")) ? KU::AccentInput::InsKey : KU::AccentInput::KKey);
+	decoded.input = ((settings["input"] == std::string("ins")) ? KU::AccentInput::InsKey : KU::AccentInput::KKey);
+	decoded.hotkey_modifiers = settings["hkmodifiers"].asUInt();
+	decoded.hotkey = settings["hotkey"].asUInt();
 
 	return decoded;
+}
+
+bool Klavier::nativeEvent(const QByteArray & eventType, void * message, long * result)
+{
+	MSG * msg = static_cast<MSG*>(message);
+
+	if (msg->message == WM_HOTKEY)
+	{
+		this->trayIcon.showMessage("Klavier status", KeyboardHook::switchActive());
+
+		return true;
+	}
+
+	return false;
 }

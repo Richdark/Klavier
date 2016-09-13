@@ -22,11 +22,23 @@ const vector<DWORD> KeyboardHook::upperOChain{ 0x4F, KU::UpperOCircumflex, KU::U
 const vector<DWORD> KeyboardHook::upperUChain{ 0x55, KU::UpperUGrave, KU::UpperUCircumflex, KU::UpperUUmlaut };
 const vector<DWORD> KeyboardHook::upperYChain{ 0x59, KU::UpperYUmlaut };
 
+// true when hook is set
+bool KeyboardHook::active = true;
+
+// ID of window that will receive hotkey messages
+HWND KeyboardHook::winId = NULL;
+
 // code of a previously pressed key
 DWORD KeyboardHook::prevCode = 0x00;
 
 // hotkey code for switching accents
 DWORD KeyboardHook::hotkey = VK_INSERT;
+
+// hotkey modifiers for switching Klavier active/inactive state
+UINT KeyboardHook::activeSwitchHotkeyModifiers = 0;
+
+// hotkey for switching Klavier active/inactive state
+UINT KeyboardHook::activeSwitchHotkey = 0;
 
 // true when backspace was sent by an application to replace a character's accent with a next one
 bool KeyboardHook::ignoreBackspace = false;
@@ -42,12 +54,13 @@ unsigned KeyboardHook::currentChainIndex = 0;
 
 KeyboardHook::KeyboardHook()
 {
-	this->set();
+	//KeyboardHook::set();
 }
 
 KeyboardHook::~KeyboardHook()
 {
-	this->release();
+	KeyboardHook::release();
+	KeyboardHook::unregisterActiveSwitchHotkey();
 }
 
 LRESULT KeyboardHook::hookCallback(int nCode, WPARAM wParam, LPARAM lParam)
@@ -242,14 +255,48 @@ void KeyboardHook::release()
 	UnhookWindowsHookEx(KeyboardHook::hook);
 }
 
-KeyboardHook& KeyboardHook::getInstance()
-{
-	return KeyboardHook::instance;
-}
-
 void KeyboardHook::setHotkey(DWORD new_hotkey)
 {
 	KeyboardHook::hotkey = new_hotkey;
+}
+
+void KeyboardHook::setActiveSwitchHotkey(const KlavierUtils::Settings& settings, HWND window_id)
+{
+	KeyboardHook::activeSwitchHotkeyModifiers = settings.hotkey_modifiers;
+	KeyboardHook::activeSwitchHotkey = settings.hotkey;
+	KeyboardHook::winId = window_id;
+
+	KeyboardHook::registerActiveSwitchHotkey();
+}
+
+bool KeyboardHook::registerActiveSwitchHotkey()
+{
+	KeyboardHook::unregisterActiveSwitchHotkey();
+
+	return RegisterHotKey(KeyboardHook::winId, 1, KeyboardHook::activeSwitchHotkeyModifiers, KeyboardHook::activeSwitchHotkey);
+}
+
+bool KeyboardHook::unregisterActiveSwitchHotkey()
+{
+	return UnregisterHotKey(KeyboardHook::winId, 1);
+}
+
+const char * KeyboardHook::switchActive()
+{
+	if (KeyboardHook::active)
+	{
+		KeyboardHook::release();
+		KeyboardHook::active = false;
+
+		return "Klavier has been disabled.";
+	}
+	else
+	{
+		KeyboardHook::set();
+		KeyboardHook::active = true;
+
+		return "Klavier has been enabled.";
+	}
 }
 
 //void KeyboardHook::run()

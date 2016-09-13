@@ -8,12 +8,14 @@
 #include "SettingsWidget.h"
 #include "AboutWidget.h"
 
+#define KLAVIER_VERSION 0.1.0
+
 class Klavier : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	Klavier(QWidget *parent = 0);
+	Klavier(QWidget * parent = 0);
 	~Klavier();
 	KlavierUtils::Settings * getSettings();
 
@@ -39,4 +41,5 @@ private:
 	void createSettingsFile();
 	KlavierUtils::Settings settingsDecode(const Json::Value & settings);
 	Json::Value settingsEncode(const KlavierUtils::Settings & settings);
+	bool nativeEvent(const QByteArray & eventType, void * message, long * result);
 };

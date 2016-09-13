@@ -37,6 +37,39 @@
      </layout>
     </widget>
    </item>
+   <item>
+    <widget class="QGroupBox" name="hotkeyGroup">
+     <property name="title">
+      <string>Switch active/inactive</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+         <widget class="QCheckBox" name="altCheckbox">
+           <property name="text">
+             <string>Alt</string>
+           </property>
+         </widget>
+       </item>
+      <item>
+       <widget class="QCheckBox" name="ctrlCheckbox">
+        <property name="text">
+         <string>Ctrl</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="shiftCheckbox">
+        <property name="text">
+         <string>Shift</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="secondaryKeyComboBox"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

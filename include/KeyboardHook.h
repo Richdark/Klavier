@@ -2,17 +2,17 @@
 
 #include <Windows.h>
 #include <vector>
-#include <QMessageBox>
-#include <string>
 #include "KlavierUtils.h"
 
 class KeyboardHook
 {
 private:
 	static KeyboardHook instance;
+	static bool active;
 	static HHOOK hook;
 	static KBDLLHOOKSTRUCT eventInfo;
-		
+	static HWND winId;
+	
 	static const std::vector<DWORD> lowerAChain;
 	static const std::vector<DWORD> lowerCChain;
 	static const std::vector<DWORD> lowerEChain;
@@ -30,6 +30,8 @@ private:
 
 	static DWORD prevCode;
 	static DWORD hotkey;
+	static UINT activeSwitchHotkeyModifiers;
+	static UINT activeSwitchHotkey;
 	static bool ignoreBackspace;
 	static bool upper;
 	static const std::vector<DWORD>* currentChain;
@@ -38,11 +40,14 @@ private:
 	KeyboardHook();
 	~KeyboardHook();
 	static LRESULT __stdcall hookCallback(int nCode, WPARAM wParam, LPARAM lParam);
-	void set();
-	void release();
+	static bool registerActiveSwitchHotkey();
+	static bool unregisterActiveSwitchHotkey();
+	static void set();
+	static void release();
 
 public:
-	static KeyboardHook& getInstance();
 	static void setHotkey(DWORD new_hotkey);
+	static void setActiveSwitchHotkey(const KlavierUtils::Settings& settings, HWND window);
+	static const char * switchActive();
 	//void run();
 };
