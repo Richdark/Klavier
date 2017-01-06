@@ -47,7 +47,8 @@ private:
 
 public:
 	static void setHotkey(DWORD new_hotkey);
+	static bool isActive();
 	static void setActiveSwitchHotkey(const KlavierUtils::Settings& settings, HWND window);
-	static const char * switchActive();
+	static bool switchActive();
 	//void run();
 };

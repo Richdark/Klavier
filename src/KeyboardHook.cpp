@@ -23,7 +23,7 @@ const vector<DWORD> KeyboardHook::upperUChain{ 0x55, KU::UpperUGrave, KU::UpperU
 const vector<DWORD> KeyboardHook::upperYChain{ 0x59, KU::UpperYUmlaut };
 
 // true when hook is set
-bool KeyboardHook::active = true;
+bool KeyboardHook::active = false;
 
 // ID of window that will receive hotkey messages
 HWND KeyboardHook::winId = NULL;
@@ -245,21 +245,33 @@ LRESULT KeyboardHook::hookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 	return CallNextHookEx(KeyboardHook::hook, nCode, wParam, lParam);
 }
 
+// set Klavier active (listen for hotkey)
 void KeyboardHook::set()
 {
 	KeyboardHook::hook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardHook::hookCallback, NULL, 0);
+	KeyboardHook::active = true;
 }
 
+// set Klavier inactive
 void KeyboardHook::release()
 {
 	UnhookWindowsHookEx(KeyboardHook::hook);
+	KeyboardHook::active = false;
 }
 
+// set hotkey for accent modification
 void KeyboardHook::setHotkey(DWORD new_hotkey)
 {
 	KeyboardHook::hotkey = new_hotkey;
 }
 
+// get Klavier active status
+bool KeyboardHook::isActive()
+{
+	return KeyboardHook::active;
+}
+
+// set hotkey for switching Klavier on/off and register it
 void KeyboardHook::setActiveSwitchHotkey(const KlavierUtils::Settings& settings, HWND window_id)
 {
 	KeyboardHook::activeSwitchHotkeyModifiers = settings.hotkey_modifiers;
@@ -269,6 +281,7 @@ void KeyboardHook::setActiveSwitchHotkey(const KlavierUtils::Settings& settings,
 	KeyboardHook::registerActiveSwitchHotkey();
 }
 
+// register hotkey for switching Klavier on/off
 bool KeyboardHook::registerActiveSwitchHotkey()
 {
 	KeyboardHook::unregisterActiveSwitchHotkey();
@@ -276,26 +289,26 @@ bool KeyboardHook::registerActiveSwitchHotkey()
 	return RegisterHotKey(KeyboardHook::winId, 1, KeyboardHook::activeSwitchHotkeyModifiers, KeyboardHook::activeSwitchHotkey);
 }
 
+// unregister hotkey for switching Klavier on/off
 bool KeyboardHook::unregisterActiveSwitchHotkey()
 {
 	return UnregisterHotKey(KeyboardHook::winId, 1);
 }
 
-const char * KeyboardHook::switchActive()
+// switch Klavier active status
+bool KeyboardHook::switchActive()
 {
 	if (KeyboardHook::active)
 	{
 		KeyboardHook::release();
-		KeyboardHook::active = false;
 
-		return "Klavier has been disabled.";
+		return false;
 	}
 	else
 	{
 		KeyboardHook::set();
-		KeyboardHook::active = true;
 
-		return "Klavier has been enabled.";
+		return true;
 	}
 }
 

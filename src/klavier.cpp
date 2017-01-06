@@ -11,6 +11,12 @@ Klavier::Klavier(QWidget *parent) : QMainWindow(parent)
 {
 	this->ui.setupUi(this);
 
+	// add checkable "active" action
+	this->trayActiveAction = this->trayMenu.addAction("Active", this, SLOT(activeActionClicked()));
+	this->trayActiveAction->setCheckable(true);
+	this->trayActiveAction->setChecked(true);
+
+	// add other actions
 	this->trayMenu.addAction("Settings", &this->settingsWindow, SLOT(show()));
 	this->trayMenu.addAction("About", &this->aboutWindow, SLOT(show()));
 	this->trayMenu.addAction("Exit", this, SLOT(quit()));
@@ -18,8 +24,12 @@ Klavier::Klavier(QWidget *parent) : QMainWindow(parent)
 	// set tray context menu
 	this->trayIcon.setContextMenu(&this->trayMenu);
 	
+	// create tray icons
+	this->activeIcon = QIcon(":/images/icon.png");
+	this->inactiveIcon = QIcon(":/images/icon_grey.png");
+
 	// set tray icon
-	this->trayIcon.setIcon(QIcon(":/images/icon.png"));
+	this->trayIcon.setIcon(this->activeIcon);
 	this->trayIcon.show();
 
 	// load app settings
@@ -27,6 +37,9 @@ Klavier::Klavier(QWidget *parent) : QMainWindow(parent)
 	this->applySettings();
 	this->settingsWindow.initSettings(this->getSettings());
 	this->connect(&this->settingsWindow, SIGNAL(settingsChanged()), this, SLOT(updateSettingsFile()));
+
+	// set as active
+	KeyboardHook::switchActive();
 }
 
 KlavierUtils::Settings * Klavier::getSettings()
@@ -133,6 +146,12 @@ void Klavier::updateSettingsFile()
 	this->applySettings();
 }
 
+void Klavier::activeActionClicked()
+{
+	// update tray icon
+	this->displayUpdatedStatus(KeyboardHook::switchActive());
+}
+
 Json::Value Klavier::settingsEncode(const KU::Settings & settings)
 {
 	Json::Value encoded;
@@ -155,16 +174,35 @@ KU::Settings Klavier::settingsDecode(const Json::Value & settings)
 	return decoded;
 }
 
+// Qt native event handler
 bool Klavier::nativeEvent(const QByteArray & eventType, void * message, long * result)
 {
 	MSG * msg = static_cast<MSG*>(message);
 
+	// switch Klavier active status hotkey was pressed
 	if (msg->message == WM_HOTKEY)
 	{
-		this->trayIcon.showMessage("Klavier status", KeyboardHook::switchActive());
+		// update tray icon
+		this->displayUpdatedStatus(KeyboardHook::switchActive());
 
 		return true;
 	}
 
 	return false;
+}
+
+void Klavier::displayUpdatedStatus(bool active)
+{
+	if (active)
+	{
+		this->trayIcon.showMessage("Klavier status", "Klavier has been enabled.");
+		this->trayIcon.setIcon(this->activeIcon);
+		this->trayActiveAction->setChecked(true);
+	}
+	else
+	{
+		this->trayIcon.showMessage("Klavier status", "Klavier has been disabled.");
+		this->trayIcon.setIcon(this->inactiveIcon);
+		this->trayActiveAction->setChecked(false);
+	}
 }

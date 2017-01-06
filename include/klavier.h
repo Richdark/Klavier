@@ -21,6 +21,7 @@ public:
 
 public slots:
 	void updateSettingsFile();
+	void activeActionClicked();
 	void quit();
 
 signals:
@@ -31,7 +32,10 @@ private:
 
 	static char * settingsFileName;
 	QSystemTrayIcon trayIcon;
+	QIcon activeIcon;
+	QIcon inactiveIcon;
 	QMenu trayMenu;
+	QAction * trayActiveAction;
 	SettingsWidget settingsWindow;
 	AboutWidget aboutWindow;
 	KlavierUtils::Settings settings;
@@ -42,4 +46,5 @@ private:
 	KlavierUtils::Settings settingsDecode(const Json::Value & settings);
 	Json::Value settingsEncode(const KlavierUtils::Settings & settings);
 	bool nativeEvent(const QByteArray & eventType, void * message, long * result);
+	void displayUpdatedStatus(bool active);
 };
