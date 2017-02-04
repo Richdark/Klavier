@@ -1,7 +1,10 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QtPlugin>
 #include "include/klavier.h"
+
+Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
 
 namespace KU = KlavierUtils;
 
